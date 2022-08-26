@@ -1,7 +1,7 @@
 import Axios from 'axios';
 
 const api = Axios.create({
-    baseURL: process.env.PUBLIC_API_URL,
+    baseURL: 'https://cataas.com/cat',
     headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json'

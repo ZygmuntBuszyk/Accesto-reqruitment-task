@@ -5,6 +5,11 @@
 }
 
 .container {
-  width: 50%;
-  margin-top: 20%
+  width: 100%;
+  max-width: 37rem;
+  margin-top: 5%
+}
+
+.filter-container {
+  margin-bottom: 3rem;
 }
