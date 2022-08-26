@@ -1,3 +1,4 @@
+import styles from './ColorPicker.module.css';
 import {useState} from "react";
 
 interface IColorPickerProps {
@@ -9,12 +10,11 @@ function ColorPicker({ colors, onChange }: IColorPickerProps) {
     const [activeColor, setActiveColor] = useState<string>(colors[0]);
 
     return (
-        <div>
+        <div className={styles.container}>
             {
-                colors.map((color: string, key:number) => (
-                    <>
+                colors.map((color: string) => (
+                    <div key={color}>
                         <input
-                            key={key}
                             type="radio"
                             value={color}
                             checked={color === activeColor}
@@ -25,7 +25,7 @@ function ColorPicker({ colors, onChange }: IColorPickerProps) {
                         }} />
 
                         <label htmlFor={color}>{color}</label>
-                    </>
+                    </div>
                 ))
             }
         </div>

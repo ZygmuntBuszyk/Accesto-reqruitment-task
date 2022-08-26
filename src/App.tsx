@@ -10,23 +10,25 @@ function App() {
     const [imageSource, setImageSource] = useState<string>('');
     const [filter, setFilter] = useState<IFilterQueryProps>();
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [serverError, setServerError] = useState<boolean>(false);
 
     const debounceTime = 1000;
 
     const summonCat = useCallback(
-        debounce(async (filter) => {
-            let buffer;
+        debounce(async (filter: IFilterQueryProps) => {
+            let catBuffer;
 
             try {
-                buffer = await CatService.getBufferCat(filter);
-                setIsLoading(false)
+                catBuffer = await CatService.getBufferCat(filter);
+                const base64ImageString = Buffer.from(catBuffer as any , 'binary').toString('base64')
+                setImageSource(`data:image/jpeg;base64,${base64ImageString}`)
             }
             catch(e) {
+                setServerError(true);
+            }
+            finally {
                 setIsLoading(false)
             }
-
-            const base64ImageString = Buffer.from(buffer as any , 'binary').toString('base64')
-            setImageSource(`data:image/jpeg;base64,${base64ImageString}`)
         }, debounceTime),
         []
     );
@@ -34,6 +36,7 @@ function App() {
     useEffect(() => {
         if (filter) {
             setIsLoading(true);
+            setServerError(false);
 
             summonCat(filter);
         }
@@ -47,17 +50,22 @@ function App() {
                 </div>
 
                 {
-                    isLoading ?
-                        <p>Loading...</p>
+                    !serverError ?
+                        isLoading ?
+                            <p>Loading...</p>
+                            :
+                            (
+                                filter?.searchValue ?
+                                    <CatCard name={filter?.searchValue} imageSource={imageSource}/>
+                                    :
+                                    <p>
+                                        Use form to generate a cat
+                                    </p>
+                            )
                         :
-                        (
-                            filter?.searchValue ?
-                                <CatCard name={filter?.searchValue} imageSource={imageSource}/>
-                                :
-                                <p>
-                                    Use form to generate a cat
-                                </p>
-                        )
+                        <p>
+                            Cat could not be generated
+                        </p>
                 }
             </div>
         </div>
